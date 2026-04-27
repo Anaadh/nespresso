@@ -49,17 +49,25 @@ function caffeineAvg(pod: Pod) {
 }
 
 function caffeineColor(avg: number): string {
-  if (avg <= 60) return "#4ade80";
-  if (avg <= 120) return "#fbbf24";
-  if (avg <= 180) return "#fb923c";
-  return "#f87171";
+  if (avg <= 40)  return "#34d399"; // emerald
+  if (avg <= 70)  return "#4ade80"; // green
+  if (avg <= 100) return "#a3e635"; // lime
+  if (avg <= 130) return "#fbbf24"; // amber
+  if (avg <= 160) return "#f59e0b"; // dark amber
+  if (avg <= 190) return "#fb923c"; // orange
+  if (avg <= 220) return "#f97316"; // dark orange
+  return "#f87171";                 // red
 }
 
 function caffeineTier(avg: number): string {
-  if (avg <= 60) return "Low";
-  if (avg <= 120) return "Moderate";
-  if (avg <= 180) return "High";
-  return "Very High";
+  if (avg <= 40)  return "Very Low";
+  if (avg <= 70)  return "Low";
+  if (avg <= 100) return "Mild";
+  if (avg <= 130) return "Moderate";
+  if (avg <= 160) return "Medium-High";
+  if (avg <= 190) return "High";
+  if (avg <= 220) return "Very High";
+  return "Extreme";
 }
 
 /* ─── Sub-components ────────────────────────────────── */
@@ -218,12 +226,16 @@ function PodCard({ pod, index, showStoreBadge }: { pod: Pod; index: number; show
 
 function Legend() {
   return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
       {[
-        { color: "#4ade80", label: "Low ≤60mg" },
-        { color: "#fbbf24", label: "Moderate ≤120mg" },
-        { color: "#fb923c", label: "High ≤180mg" },
-        { color: "#f87171", label: "Very high >180mg" },
+        { color: "#34d399", label: "≤40mg" },
+        { color: "#4ade80", label: "≤70mg" },
+        { color: "#a3e635", label: "≤100mg" },
+        { color: "#fbbf24", label: "≤130mg" },
+        { color: "#f59e0b", label: "≤160mg" },
+        { color: "#fb923c", label: "≤190mg" },
+        { color: "#f97316", label: "≤220mg" },
+        { color: "#f87171", label: ">220mg" },
       ].map(({ color, label }) => (
         <span key={label} className="flex items-center gap-1.5 text-[10px] text-[#444]">
           <span className="inline-block rounded-full" style={{ width: 6, height: 6, background: color }} />

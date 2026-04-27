@@ -148,6 +148,7 @@ const pods: Pod[] = [
   { id: "o-mc-colombia", name: "COLOMBIA", lineup: "Original", category: "Master Crafted", cupSize: "Espresso (40ml)", caffeineMin: 64, caffeineMax: 64, caffeineLabel: "64mg", intensity: 6, notes: "Fruity Winey", decaf: false, weight: "5.7g" },
   { id: "o-mc-nicaragua", name: "NICARAGUA", lineup: "Original", category: "Master Crafted", cupSize: "Espresso (40ml)", caffeineMin: 62, caffeineMax: 62, caffeineLabel: "62mg", intensity: 5, notes: "Cereal", decaf: false, weight: "5.7g" },
   { id: "o-mc-ethiopia", name: "ETHIOPIA", lineup: "Original", category: "Master Crafted", cupSize: "Espresso (40ml)", caffeineMin: 62, caffeineMax: 62, caffeineLabel: "62mg", intensity: 4, notes: "Flowery & Fruity", decaf: false, weight: "5.7g" },
+  { id: "o-ii-arpeggio-extra", name: "ARPEGGIO EXTRA", lineup: "Original", category: "Ispirazione Italiana", cupSize: "Ristretto (25ml)", caffeineMin: 63, caffeineMax: 63, caffeineLabel: "63mg", intensity: 10, notes: "Intense, Cocoa & Roasted", decaf: false, weight: "5.5g" },
 ];
 
 export default pods;
@@ -175,4 +176,7 @@ export const MALDIVES_IDS = new Set([
   "o-bc-vaniglia", "o-bc-caramello", "o-bc-cioccolatino", "o-bc-nocciola",
   // Master Origin
   "o-mc-nicaragua", "o-mc-colombia", "o-mc-indonesia", "o-mc-india",
+  "o-mc-ethiopia",
+  // Arpeggio Extra
+  "o-ii-arpeggio-extra",
 ]);
