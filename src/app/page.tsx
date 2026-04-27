@@ -4,12 +4,14 @@ import { useState, useMemo } from "react";
 import pods, {
   ALL_CATEGORIES,
   ALL_LINEUPS,
+  MALDIVES_IDS,
   MAX_CAFFEINE,
   type CupSize,
   type Lineup,
   type Pod,
 } from "@/lib/data";
 import { Slider } from "@/components/ui/slider";
+import { Input } from "@/components/ui/input";
 
 /* ─── Constants ─────────────────────────────────────── */
 
@@ -161,7 +163,7 @@ function IntensityDots({ intensity }: { intensity: number | null }) {
   );
 }
 
-function PodCard({ pod, index }: { pod: Pod; index: number }) {
+function PodCard({ pod, index, showStoreBadge }: { pod: Pod; index: number; showStoreBadge: boolean }) {
   const avg = caffeineAvg(pod);
   const tier = caffeineTier(avg);
   const color = caffeineColor(avg);
@@ -186,15 +188,25 @@ function PodCard({ pod, index }: { pod: Pod; index: number }) {
         (e.currentTarget as HTMLDivElement).style.transform = "none";
       }}
     >
-      {/* Decaf badge */}
-      {pod.decaf && (
-        <div
-          className="absolute top-3 left-3 px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-widest"
-          style={{ background: "rgba(56,189,248,0.12)", color: "#38bdf8", border: "1px solid rgba(56,189,248,0.2)" }}
-        >
-          Decaf
-        </div>
-      )}
+      {/* Badges */}
+      <div className="absolute top-3 left-3 flex gap-1">
+        {pod.decaf && (
+          <div
+            className="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-widest"
+            style={{ background: "rgba(56,189,248,0.12)", color: "#38bdf8", border: "1px solid rgba(56,189,248,0.2)" }}
+          >
+            Decaf
+          </div>
+        )}
+        {showStoreBadge && MALDIVES_IDS.has(pod.id) && (
+          <div
+            className="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-widest"
+            style={{ background: "rgba(196,143,40,0.12)", color: "#c48f28", border: "1px solid rgba(196,143,40,0.2)" }}
+          >
+            🇲🇻 MV
+          </div>
+        )}
+      </div>
 
       {/* Top row: meta + ring */}
       <div className="flex items-start justify-between gap-2 mb-3">
@@ -287,9 +299,11 @@ export default function Home() {
   const [sortKey, setSortKey] = useState<SortKey>("caffeine-desc");
   const [caffeineRange, setCaffeineRange] = useState([0, MAX_CAFFEINE]);
   const [showDecaf, setShowDecaf] = useState(true);
+  const [maldivesOnly, setMaldivesOnly] = useState(true);
 
   const filtered = useMemo(() => {
     const list = pods.filter((p) => {
+      if (maldivesOnly && !MALDIVES_IDS.has(p.id)) return false;
       if (!showDecaf && p.decaf) return false;
       if (lineup !== "all" && p.lineup !== lineup) return false;
       if (category !== "all" && p.category !== category) return false;
@@ -318,7 +332,7 @@ export default function Home() {
       }
     });
     return list;
-  }, [search, lineup, category, cupSize, sortKey, caffeineRange, showDecaf]);
+  }, [search, lineup, category, cupSize, sortKey, caffeineRange, showDecaf, maldivesOnly]);
 
   const cupSizeOptions = useMemo(() => {
     const sizes = new Set(
@@ -329,6 +343,32 @@ export default function Home() {
 
   return (
     <div className="min-h-screen" style={{ background: "#0d0a07" }}>
+
+      {/* ── Maldives Store Banner ─────────────────────── */}
+      <div
+        className="border-b flex items-center justify-between px-6 py-2.5"
+        style={{ background: maldivesOnly ? "rgba(196,143,40,0.07)" : "rgba(255,255,255,0.02)", borderColor: maldivesOnly ? "rgba(196,143,40,0.18)" : "#1e1812" }}
+      >
+        <div className="flex items-center gap-2.5">
+          <span className="text-base leading-none" role="img" aria-label="Maldives">🇲🇻</span>
+          <span className="text-xs font-medium" style={{ color: maldivesOnly ? "#c48f28" : "#4a3820" }}>
+            {maldivesOnly
+              ? `Maldives Store · ${MALDIVES_IDS.size} pods (Classic line)`
+              : "Showing all 93 pods worldwide"}
+          </span>
+        </div>
+        <button
+          onClick={() => setMaldivesOnly(!maldivesOnly)}
+          className="text-[10px] font-semibold uppercase tracking-widest transition-colors px-3 py-1 rounded-full"
+          style={
+            maldivesOnly
+              ? { color: "#6b5440", background: "transparent", border: "1px solid #2a1f10" }
+              : { color: "#c48f28", background: "rgba(196,143,40,0.1)", border: "1px solid rgba(196,143,40,0.25)" }
+          }
+        >
+          {maldivesOnly ? "Show all" : "Maldives only"}
+        </button>
+      </div>
 
       {/* ── Hero Header ───────────────────────────────── */}
       <header style={{ borderBottom: "1px solid #1e1812" }}>
@@ -348,7 +388,7 @@ export default function Home() {
               <span style={{ color: "#c48f28" }}>Caffeine</span> Guide
             </h1>
             <p className="mt-4 text-sm" style={{ color: "#4a3820" }}>
-              All 93 pods · Data sourced from Nespresso Taiwan · Intensity ≠ caffeine
+              {maldivesOnly ? "Classic line · Maldives store" : "All 93 pods worldwide"} · Data sourced from Nespresso Taiwan · Intensity ≠ caffeine
             </p>
           </div>
 
@@ -377,7 +417,7 @@ export default function Home() {
           {/* Row 1: search + lineup + sort + decaf */}
           <div className="flex flex-wrap gap-3 items-center">
             {/* Search */}
-            <div className="relative">
+            <div className="relative w-48">
               <svg
                 className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
                 style={{ color: "#3d2c18" }}
@@ -386,20 +426,11 @@ export default function Home() {
               >
                 <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
               </svg>
-              <input
-                type="text"
+              <Input
                 placeholder="Search pods…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-8 pr-4 py-2 rounded-xl text-xs transition-all focus:outline-none"
-                style={{
-                  background: "#1e1812",
-                  border: "1px solid #2a1f10",
-                  color: "#f0e4cc",
-                  width: 200,
-                }}
-                onFocus={(e) => (e.target.style.borderColor = "rgba(196,143,40,0.5)")}
-                onBlur={(e) => (e.target.style.borderColor = "#2a1f10")}
+                className="pl-8 h-8 text-xs w-full"
               />
             </div>
 
@@ -533,7 +564,8 @@ export default function Home() {
               style={{ color: "#4a3820" }}
               onClick={() => {
                 setSearch(""); setLineup("all"); setCategory("all");
-                setCupSize("all"); setCaffeineRange([0, MAX_CAFFEINE]); setShowDecaf(true);
+                setCupSize("all"); setCaffeineRange([0, MAX_CAFFEINE]);
+                setShowDecaf(true); setMaldivesOnly(true);
               }}
             >
               Clear all filters
@@ -542,7 +574,7 @@ export default function Home() {
         ) : (
           <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {filtered.map((pod, i) => (
-              <PodCard key={pod.id} pod={pod} index={i} />
+              <PodCard key={pod.id} pod={pod} index={i} showStoreBadge={!maldivesOnly} />
             ))}
           </div>
         )}

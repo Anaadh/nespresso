@@ -156,3 +156,23 @@ export const ALL_LINEUPS: Lineup[] = ["Vertuo", "Original"];
 export const ALL_CATEGORIES = [...new Set(pods.map((p) => p.category))].sort();
 export const ALL_CUP_SIZES = [...new Set(pods.map((p) => p.cupSize))];
 export const MAX_CAFFEINE = 257;
+
+// Pods available at the Maldives Nespresso store (Original / Classic line only)
+export const MALDIVES_IDS = new Set([
+  // Ispirazione Italiana
+  "o-ii-ristretto", "o-ii-firenze", "o-ii-roma", "o-ii-genova",
+  "o-ii-palermo", "o-ii-napoli", "o-ii-venezia",
+  "o-ii-ristretto-decaf", "o-ii-firenze-decaf",
+  // Original Collection
+  "o-capriccio", "o-cosi", "o-volluto", "o-volluto-decaf",
+  // World Explorations - Lungo
+  "o-we-stockholm", "o-we-vienna", "o-we-capetown",
+  "o-we-tokyo", "o-we-shanghai", "o-we-buenosaires",
+  // World Explorations - Espresso
+  "o-we-rio", "o-we-paris", "o-we-istanbul",
+  // Barista Creations
+  "o-bc-chiaro", "o-bc-scuro", "o-bc-corto",
+  "o-bc-vaniglia", "o-bc-caramello", "o-bc-cioccolatino", "o-bc-nocciola",
+  // Master Origin
+  "o-mc-nicaragua", "o-mc-colombia", "o-mc-indonesia", "o-mc-india",
+]);
